@@ -9,5 +9,5 @@ class Object {
     public:
         virtual ~Object();
 
-        virtual bool intersect(const Ray&, double &, Intersection &) const = 0;
+        virtual bool intersect(const Ray&, double, double, Intersection&) const = 0;
 };
