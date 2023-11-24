@@ -1,4 +1,6 @@
-// UNIkeEN 2023/11/23
+//
+// Created by UNIkeEN on 23-11-23.
+//
 
 #pragma once
 
@@ -12,9 +14,10 @@ class Sphere : public Object {
     public:
         Vector3 center;
         double radius;
+        Material* mat;
 
         Sphere(const Vector3& c): center(c), radius(1) {}
-        Sphere(const Vector3& c, const double& r): center(c), radius(r) {}
+        Sphere(const Vector3& c, const double& r, Material* _mat): center(c), radius(r), mat(_mat) {}
 
         bool intersect(const Ray& r, double tmin, double tmax, Intersection& rec) const override {
             Vector3 o_c = r.origin - center;
@@ -36,6 +39,9 @@ class Sphere : public Object {
             rec.p = r(t_near);
             rec.t = t_near;
             rec.set_correct_normal(r, (rec.p - center) / radius);
+            rec.mat = mat;
+
+            // record uv todo
 
             return true;
         }
