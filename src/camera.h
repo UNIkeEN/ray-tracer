@@ -38,13 +38,13 @@ class Camera {
 //            Ray test = generate_ray(height/2 - 1, width/2 - 1);
 //            auto test_ = get_ray_color(test, 10, world);
             for (int j = 0; j < height; ++j) {
-                std::cout << j+1 << "/" << height <<std::endl;
                 for (int i = 0; i < width; ++i) {
                     for (int sample = 0; sample < spp; ++sample) {
                         Ray r = generate_ray(i, j);
                         img_buffer[j*width + i] += get_ray_color(r, max_depth, world) / spp;
                     }
                 }
+                show_progress(j + 1, height);
             }
 
             return img_buffer;   

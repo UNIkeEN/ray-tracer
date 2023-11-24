@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <cstdio>
 
 // Constants
 
@@ -37,4 +38,19 @@ inline double random_double() {
 inline double random_double(double min, double max) {
     // Returns a random real in [min,max).
     return min + (max-min)*random_double();
+}
+
+void show_progress(int current, int total) {
+    const int bar_width = 70;
+    float progress = (float)current / total;
+    int pos = bar_width * progress;
+
+    printf("\r[");
+    for (int i = 0; i < bar_width; ++i) {
+        if (i < pos) printf("=");
+        else if (i == pos) printf(">");
+        else printf(" ");
+    }
+    printf("] %d/%d (%6.2f%%)", current, total, progress * 100.0);
+    fflush(stdout);
 }
