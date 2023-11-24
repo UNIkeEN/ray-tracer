@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
-# 项目名称
 project(UNIkeEN_ray_tracer)
 
-# 设置C++标准
-set(CMAKE_CXX_STANDARD 11)
+# need C++ 17 (OBJ_Loader library needs)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set ( SOURCE
@@ -18,6 +17,7 @@ set ( SOURCE
     src/utils.h
     src/vector3.h
     src/triangle.h
+    src/external/OBJ_Loader.hpp
 )
 
 add_executable(UNIkeEN_ray_tracer ${SOURCE})
