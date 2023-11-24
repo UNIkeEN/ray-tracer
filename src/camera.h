@@ -6,6 +6,8 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <thread>
+#include <atomic>
 
 #include "intersection.h"
 #include "ray.h"
@@ -32,11 +34,10 @@ class Camera {
         Camera(const int& _height, const int& _width): height(_height), width(_width) {}
 
         std::vector<Vector3> render(const Scene& world) {
+            // render on single thread
             std::vector<Vector3> img_buffer(width * height);
             init();
 
-//            Ray test = generate_ray(height/2 - 1, width/2 - 1);
-//            auto test_ = get_ray_color(test, 10, world);
             for (int j = 0; j < height; ++j) {
                 for (int i = 0; i < width; ++i) {
                     for (int sample = 0; sample < spp; ++sample) {
@@ -48,6 +49,40 @@ class Camera {
             }
 
             return img_buffer;   
+        }
+
+        std::vector<Vector3> render(const Scene& world, const int& thread_count) {
+            // render on multiple threads
+            std::vector<Vector3> img_buffer(width * height);
+            std::vector<std::thread> threads;
+            std::atomic<int> next_row(0); //next row index for processing
+            init();
+
+            auto render_thread = [&]() {
+                while (true) {
+                    int j = next_row++;
+                    if (j >= height) break;
+
+                    for (int i = 0; i < width; ++i) {
+                        Vector3 pixel_color(0, 0, 0);
+                        for (int sample = 0; sample < spp; ++sample) {
+                            Ray r = generate_ray(i, j);
+                            pixel_color += get_ray_color(r, max_depth, world) / spp;
+                        }
+                        img_buffer[j * width + i] += pixel_color;
+                    }
+                    show_progress(j + 1, height);
+                }
+            };
+
+            for (int i = 0; i < thread_count; ++i) {
+                threads.emplace_back(render_thread);    // create threads
+            }
+
+            for (auto &t : threads) {   // wait and collect
+                if (t.joinable()) t.join();
+            }
+            return img_buffer;
         }
 
     private:

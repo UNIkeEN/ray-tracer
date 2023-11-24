@@ -74,7 +74,7 @@ class BasicLight : public Material {
             return false; 
         }
 
-        Vector3 emit(double u, double v, const Vector3& p) const override { 
-            return Vector3(1, 1, 1); 
+        Vector3 emit(double u, double v, const Vector3& p) const override {
+            return Vector3(31.1, 25, 20);
         }
 };

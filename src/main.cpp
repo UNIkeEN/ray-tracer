@@ -37,11 +37,12 @@ int main(){
 
     // Configs of renderer
     int max_ray_bounces = 50;
-    int spp = 1000;
+    int spp = 2048;
+    int render_threads = 16;
 
     // Configs of camera
     int vfov = 40;
-    Vector3 lookfrom = Vector3(278, 278, -300);
+    Vector3 lookfrom = Vector3(278, 278, -600);
     Vector3 lookat = Vector3(278, 278, 0);
     Vector3 background_color = Vector3(0 ,0, 0);
     
@@ -80,7 +81,10 @@ int main(){
     camera.background_color = background_color;
 
     // Render and output
-    std::vector<Vector3> rendered_image = camera.render(scene);
+    std::vector<Vector3> rendered_image;
+    rendered_image = (render_threads == 1
+            ? camera.render(scene)
+            : camera.render(scene, render_threads));
     write_image(image_height, image_width, rendered_image); 
 
     return 0;
