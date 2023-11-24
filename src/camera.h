@@ -1,14 +1,18 @@
-// UNIkeEN 2023/11/23
-
+//
+// Created by UNIkeEN on 23-11-23.
+//
 #pragma once
 
 #include <cmath>
+#include <iostream>
+#include <vector>
 
 #include "intersection.h"
 #include "ray.h"
 #include "scene.h"
 #include "utils.h"
 #include "vector3.h"
+#include "material.h"
 
 class Camera {
     public:
@@ -26,6 +30,25 @@ class Camera {
         Vector3 background_color = Vector3(0, 0, 0);
 
         Camera(const int& _height, const int& _width): height(_height), width(_width) {}
+
+        std::vector<Vector3> render(const Scene& world) {
+            std::vector<Vector3> img_buffer(width * height);
+            init();
+
+//            Ray test = generate_ray(height/2 - 1, width/2 - 1);
+//            auto test_ = get_ray_color(test, 10, world);
+            for (int j = 0; j < height; ++j) {
+                std::cout << j+1 << "/" << height <<std::endl;
+                for (int i = 0; i < width; ++i) {
+                    for (int sample = 0; sample < spp; ++sample) {
+                        Ray r = generate_ray(i, j);
+                        img_buffer[j*width + i] += get_ray_color(r, max_depth, world) / spp;
+                    }
+                }
+            }
+
+            return img_buffer;   
+        }
 
     private:
         double theta;
@@ -71,10 +94,17 @@ class Camera {
             Intersection rec;
 
             if (!world.intersect(r_in, EPSILON, INF, rec)) return background_color;
-
+            
             //emit
+            Vector3 color_emit = rec.mat->emit(rec.u, rec.v, rec.p);
 
             //scatter
-
+            Vector3 attenuation;
+            Ray r_out;
+            if (!rec.mat->scatter(r_in, rec, attenuation, r_out))
+                return color_emit;
+            
+            Vector3 color_scatter = attenuation * get_ray_color(r_out, bounce_left - 1, world);
+            return color_emit + color_scatter;
         } 
 };
