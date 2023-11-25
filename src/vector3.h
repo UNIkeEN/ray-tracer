@@ -23,6 +23,8 @@ class Vector3 {
         Vector3 operator / (const double &r) const { return Vector3(x / r, y / r, z / r); } 
 
         Vector3& operator += (const Vector3 &v) { x += v.x, y += v.y, z += v.z; return *this; }
+
+        double operator[](int index) const { return index == 0 ? x : (index == 1 ? y : z); }
         
         double length2() const { return (x * x + y * y + z * z); }
         double length() const { return sqrt(length2()); }

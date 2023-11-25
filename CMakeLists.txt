@@ -17,6 +17,7 @@ set ( SOURCE
     src/utils.h
     src/vector3.h
     src/triangle.h
+    src/bbox.h
     src/external/OBJ_Loader.hpp
 )
 
