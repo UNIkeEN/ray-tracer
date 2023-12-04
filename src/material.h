@@ -8,6 +8,9 @@
 #include "ray.h"
 #include "utils.h"
 #include "vector3.h"
+#include "texture.h"
+
+#include <memory>
 
 //specular reflection
 inline Vector3 reflect(const Vector3 & v, const Vector3 & n) {
@@ -34,7 +37,8 @@ class Material {
 
 class Lambertian : public Material {
     public:
-        Lambertian(const Vector3& _albedo): albedo(_albedo) {}
+        Lambertian(Vector3 _albedo): albedo(std::make_shared<SolidColor>(_albedo)) {}
+        Lambertian(std::shared_ptr<Texture> _albedo): albedo(_albedo) {}
 
         bool scatter(const Ray& ray_in, const Intersection& rec, Vector3& attenuation, Ray& ray_out) const override {
             Vector3 random_direction = uniform(random_vec(-1,1));
@@ -44,12 +48,12 @@ class Lambertian : public Material {
                 scatter_direction = rec.normal;
 
             ray_out = Ray(rec.p, scatter_direction);
-            attenuation = albedo;
+            attenuation = albedo->get_color(rec.u, rec.v, rec.p);
             return true;
         }
 
     private:
-        Vector3 albedo;
+        std::shared_ptr<Texture> albedo;
 };
 
 class Metal : public Material {

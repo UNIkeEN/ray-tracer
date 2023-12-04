@@ -7,6 +7,7 @@
 #include "object.h"
 #include "vector3.h"
 #include "ray.h"
+#include "utils.h"
 
 #include <cmath>
 
@@ -38,11 +39,22 @@ class Sphere : public Object {
 
             rec.p = r(t_near);
             rec.t = t_near;
-            rec.set_correct_normal(r, (rec.p - center) / radius);
+            Vector3 uni_normal = (rec.p - center) / radius;
+            rec.set_correct_normal(r, uni_normal);
             rec.mat = mat;
-
-            // record uv todo
+            get_uv(uni_normal, rec.u, rec.v);
 
             return true;
+        }
+
+    private:
+        static void get_uv(const Vector3& p, double& u, double& v) {
+            // p is relative Cartesian coordinates on unit sphere
+            auto phi = acos(-p.y);
+            auto theta = atan2(-p.z, p.x) + PI;
+
+            // uv is [0,1] x [0,1]
+            u = theta / (2.0 * PI);
+            v = phi / PI;
         }
 };

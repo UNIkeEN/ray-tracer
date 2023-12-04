@@ -18,7 +18,10 @@ set ( SOURCE
     src/vector3.h
     src/triangle.h
     src/bbox.h
+    src/texture.h
     src/external/OBJ_Loader.hpp
+    src/external/stb_image.h
+    src/external/rtw_stb_image.h
 )
 
 add_executable(UNIkeEN_ray_tracer ${SOURCE})

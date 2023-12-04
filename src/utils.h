@@ -37,7 +37,7 @@ inline double random_double() {
 
 inline double random_double(double min, double max) {
     // Returns a random real in [min,max).
-    return min + (max-min)*random_double();
+    return min + (max-min) * random_double();
 }
 
 void show_progress(int current, int total) {
