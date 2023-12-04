@@ -1,6 +1,7 @@
 build/
 cmake-build-debug/
 ref/
+images/
 
 .vscode/
 .idea/

@@ -34,18 +34,19 @@ class SolidColor : public Texture {
 class CheckerTexture : public Texture {
     public:
         // use shared_ptr to auto destruct
-        CheckerTexture(std::shared_ptr<Texture> _even, std::shared_ptr<Texture> _odd) : even(_even), odd(_odd) {}
-        CheckerTexture(Vector3 _even, Vector3 _odd)
-            : even(std::make_shared<SolidColor>(_even)), odd(std::make_shared<SolidColor>(_odd)) {}
+        CheckerTexture(const double& _scale, std::shared_ptr<Texture> _even, std::shared_ptr<Texture> _odd)
+            : scale(_scale), even(_even), odd(_odd) {}
+        CheckerTexture(const double& _scale, Vector3 _even, Vector3 _odd)
+            : scale(_scale), even(std::make_shared<SolidColor>(_even)), odd(std::make_shared<SolidColor>(_odd)) {}
 
 //      CheckerTexture(Texture* _even, Texture* _odd) : even(_even), odd(_odd) {}
 //      CheckerTexture(Vector3 _even, Vector3 _odd) :
 //          even(new SolidColor(_even)), odd(new SolidColor(_odd)) {}
 
         Vector3 get_color(const double& u, const double& v, const Vector3& p) const override {
-            auto x = static_cast<int>(std::floor(p.x));
-            auto y = static_cast<int>(std::floor(p.y));
-            auto z = static_cast<int>(std::floor(p.z));
+            auto x = static_cast<int>(std::floor(scale * p.x));
+            auto y = static_cast<int>(std::floor(scale * p.y));
+            auto z = static_cast<int>(std::floor(scale * p.z));
 
             bool flag = (x + y + z) % 2 == 0;
 
@@ -53,12 +54,13 @@ class CheckerTexture : public Texture {
         }
 
     private:
+        double scale;
         std::shared_ptr<Texture> even;
         std::shared_ptr<Texture> odd;
 };
 
 // texture of "missing texture" for debugging
-CheckerTexture missing_texture = {{0.667, 0.667, 0.667}, {0, 0, 0}};
+CheckerTexture missing_texture = {0.3, {0.667, 0, 0.667}, {0, 0, 0}};
 
 class ImageTexture : public Texture {
     public:
