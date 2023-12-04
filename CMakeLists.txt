@@ -15,7 +15,7 @@ set ( SOURCE
     src/scene.h
     src/sphere.h
     src/utils.h
-    src/vector3.h
+    src/vector.h
     src/triangle.h
     src/bbox.h
     src/texture.h

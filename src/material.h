@@ -7,7 +7,7 @@
 #include "intersection.h"
 #include "ray.h"
 #include "utils.h"
-#include "vector3.h"
+#include "vector.h"
 #include "texture.h"
 
 #include <memory>

@@ -13,7 +13,7 @@
 #include "ray.h"
 #include "scene.h"
 #include "utils.h"
-#include "vector3.h"
+#include "vector.h"
 #include "material.h"
 
 class Camera {

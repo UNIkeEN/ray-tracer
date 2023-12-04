@@ -60,3 +60,15 @@ inline Vector3 random_vec(const double& min, const double& max) {
         random_double(min, max)
     );
 }
+
+class Vector2 {
+    public:
+        double x, y;
+        Vector2(): x(0), y(0) {}
+        Vector2(double _x, double _y): x(_x), y(_y) {}
+
+        Vector2 operator + (const Vector2 &v) const { return Vector2(x + v.x, y + v.y); }
+        Vector2 operator * (const double &r) const { return Vector2(x * r, y * r); }
+};
+
+inline Vector2 operator * (const double &r, const Vector2 &v) { return v * r; }

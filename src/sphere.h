@@ -5,7 +5,7 @@
 #pragma once
 
 #include "object.h"
-#include "vector3.h"
+#include "vector.h"
 #include "ray.h"
 #include "utils.h"
 

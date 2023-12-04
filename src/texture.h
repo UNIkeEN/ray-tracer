@@ -5,7 +5,7 @@
 #pragma once
 
 #include "utils.h"
-#include "vector3.h"
+#include "vector.h"
 #include "external/rtw_stb_image.h"
 
 #include <memory>
