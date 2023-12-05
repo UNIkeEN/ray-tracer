@@ -60,7 +60,7 @@ class CheckerTexture : public Texture {
 };
 
 // texture of "missing texture" for debugging
-CheckerTexture missing_texture = {0.3, {0.667, 0, 0.667}, {0, 0, 0}};
+CheckerTexture missing_texture = {0.015, {0.667, 0, 0.667}, {0, 0, 0}};
 
 class ImageTexture : public Texture {
     public:
