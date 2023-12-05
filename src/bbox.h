@@ -34,7 +34,7 @@ class Bbox {
                 if (t0 > tmin) tmin = t0;
                 if (t1 < tmax) tmax = t1;
 
-                if (tmax <= tmin) return false;
+                if (tmax < tmin) return false;
             }
             return true;
         }
