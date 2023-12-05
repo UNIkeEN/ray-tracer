@@ -40,6 +40,11 @@ inline double random_double(double min, double max) {
     return min + (max-min) * random_double();
 }
 
+inline int random_int(int min, int max) {
+    // Returns a random integer in [min,max].
+    return static_cast<int>(random_double(min, max+1));
+}
+
 void show_progress(int current, int total) {
     const int bar_width = 70;
     float progress = (float)current / total;

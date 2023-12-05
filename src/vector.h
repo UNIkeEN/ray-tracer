@@ -61,6 +61,14 @@ inline Vector3 random_vec(const double& min, const double& max) {
     );
 }
 
+inline Vector3 min(const Vector3& u, const Vector3& v) {
+    return Vector3(std::min(u.x, v.x), std::min(u.y, v.y), std::min(u.z, v.z));
+}
+
+inline Vector3 max(const Vector3& u, const Vector3& v) {
+    return Vector3(std::max(u.x, v.x), std::max(u.y, v.y), std::max(u.z, v.z));
+}
+
 class Vector2 {
     public:
         double x, y;
