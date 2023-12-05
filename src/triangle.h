@@ -80,64 +80,68 @@ class MeshTriangle : public Object {
         std::shared_ptr<BVHNode> root;
 
         MeshTriangle(const std::vector<Triangle>& _triangles) : triangles(_triangles) {
-//            root = buildBVH(triangles, 0, static_cast<long>(_triangles.size()));
+            root = buildBVH(triangles, 0, static_cast<long>(_triangles.size()));
         }
 
         MeshTriangle(const std::string& filename, Material* _mat): mat(_mat) {
             load_meshes_from_OBJ(filename, false);
+            root = buildBVH(triangles, 0, static_cast<long>(triangles.size()));
         }
 
         MeshTriangle(const std::string& filename) {
             load_meshes_from_OBJ(filename, true);
+            root = buildBVH(triangles, 0, static_cast<long>(triangles.size()));
         }
 
-//        use BVH
+        //with BVH
+        bool intersect(const Ray& r, double tmin, double tmax, Intersection& rec) const override {
+            return root && root->intersect(r, tmin, tmax, rec);
+        }
+
+        //without BVH
 //        bool intersect(const Ray& r, double tmin, double tmax, Intersection& rec) const override {
-//            return root && root->intersect(r, tmin, tmax, rec);
+//            Intersection tmp;
+//            auto if_hit = false;
+//            double cur_tmax = tmax;
+//
+//            for (const auto& triangle : triangles) {
+//                if (triangle.intersect(r, tmin, cur_tmax, tmp)) {
+//                    if_hit = true;
+//                    cur_tmax = tmp.t;
+//                    rec = tmp;
+//                }
+//            }
+//
+//            return if_hit;
 //        }
 
-        bool intersect(const Ray& r, double tmin, double tmax, Intersection& rec) const override {
-            Intersection tmp;
-            auto if_hit = false;
-            double cur_tmax = tmax;
+        std::shared_ptr<BVHNode> buildBVH(std::vector<Triangle>& triangles_vec, long start, long end) {
+            if (start == end - 1)
+                return std::make_shared<BVHNode>(
+                        std::make_shared<Triangle>(triangles_vec[start]), nullptr, triangles_vec[start].bbox
+                );
+            if (start == end - 2)
+                return std::make_shared<BVHNode>(
+                        std::make_shared<Triangle>(triangles_vec[start]), std::make_shared<Triangle>(triangles_vec[start + 1]),
+                        Bbox( triangles_vec[start].bbox, triangles_vec[start + 1].bbox )
+                );
 
-            for (const auto& triangle : triangles) {
-                if (triangle.intersect(r, tmin, cur_tmax, tmp)) {
-                    if_hit = true;
-                    cur_tmax = tmp.t;
-                    rec = tmp;
-                }
-            }
+            // use binary algorithm
+            long mid = (start + end) / 2;
+            std::nth_element(triangles_vec.begin() + start, triangles_vec.begin() + mid, triangles_vec.begin() + end,
+                             [](const Triangle& a, const Triangle& b) {
+                                int axios = random_int(0, 2);
+//                                return a.bbox.pmin.z + a.bbox.pmax.z < b.bbox.pmin.z + b.bbox.pmax.z;
+                                return a.bbox.pmin[axios] + a.bbox.pmax[axios] < b.bbox.pmin[axios] + b.bbox.pmax[axios];
+                             });
 
-            return if_hit;
+            auto left = buildBVH(triangles_vec, start, mid);
+            auto right = buildBVH(triangles_vec, mid, end);
+
+            // calc merged bbox
+            Bbox bbox = { left->bbox, right->bbox };
+            return std::make_shared<BVHNode>(left, right, bbox);
         }
-
-//    std::shared_ptr<BVHNode> buildBVH(std::vector<Triangle>& src_triangles, long start, long end) {
-//        auto triangles_vec(src_triangles);
-//        if (start == end - 1)
-//            return std::make_shared<BVHNode>(
-//                    std::make_shared<Triangle>(triangles_vec[start]), nullptr, triangles_vec[start].bbox
-//            );
-//        if (start == end - 2)
-//            return std::make_shared<BVHNode>(
-//                    std::make_shared<Triangle>(triangles_vec[start]), std::make_shared<Triangle>(triangles_vec[start + 1]),
-//                    Bbox( triangles_vec[start].bbox, triangles_vec[start + 1].bbox )
-//            );
-//
-//        // use binary algorithm
-//        long mid = (start + end) / 2;
-//        std::nth_element(triangles_vec.begin() + start, triangles_vec.begin() + mid, triangles_vec.begin() + end,
-//                         [](const Triangle& a, const Triangle& b) {
-//                             return a.bbox.pmin.z + a.bbox.pmax.z < b.bbox.pmin.z + b.bbox.pmax.z;
-//                         });
-//
-//        auto left = buildBVH(triangles_vec, start, mid);
-//        auto right = buildBVH(triangles_vec, mid, end);
-//
-//        // calc merged bbox
-//        Bbox bbox = { left->bbox, right->bbox };
-//        return std::make_shared<BVHNode>(left, right, bbox);
-//    }
 
     private:
         void load_meshes_from_OBJ(const std::string& filename, const bool& load_texture) {
