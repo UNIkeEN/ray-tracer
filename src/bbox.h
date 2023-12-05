@@ -16,6 +16,11 @@ class Bbox {
 
         Bbox(const Vector3& _pmin, const Vector3& _pmax): pmin(_pmin), pmax(_pmax) {}
 
+        Bbox(const Bbox& bbox1, const Bbox& bbox2) {    // merge bbox
+            pmin = min(bbox1.pmin, bbox2.pmin);
+            pmax = max(bbox1.pmax, bbox2.pmax);
+        }
+
         bool intersect(const Ray& r, double tmin, double tmax) const {
             Vector3 origin = r.origin;
             Vector3 direction = r.direction;

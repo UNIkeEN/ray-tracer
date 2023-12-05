@@ -19,6 +19,7 @@ set ( SOURCE
     src/triangle.h
     src/bbox.h
     src/texture.h
+    src/bvh.h
     src/external/OBJ_Loader.hpp
     src/external/stb_image.h
     src/external/rtw_stb_image.h
