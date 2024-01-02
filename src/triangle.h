@@ -128,9 +128,9 @@ class MeshTriangle : public Object {
 
             // use binary algorithm
             long mid = (start + end) / 2;
+            int axios = random_int(0, 2);
             std::nth_element(triangles_vec.begin() + start, triangles_vec.begin() + mid, triangles_vec.begin() + end,
-                             [](const Triangle& a, const Triangle& b) {
-                                int axios = random_int(0, 2);
+                             [axios](const Triangle& a, const Triangle& b) {
 //                                return a.bbox.pmin.z + a.bbox.pmax.z < b.bbox.pmin.z + b.bbox.pmax.z;
                                 return a.bbox.pmin[axios] + a.bbox.pmax[axios] < b.bbox.pmin[axios] + b.bbox.pmax[axios];
                              });
