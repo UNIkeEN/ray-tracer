@@ -16,8 +16,10 @@ class Intersection {
         double t;
         double u, v;
         Material* mat;
+        bool front_face;
 
         void set_correct_normal(const Ray& r, const Vector3& _normal) {
-            normal = dot(r.direction, _normal) < 0 ? _normal : -_normal;
+            front_face =  dot(r.direction, _normal) < 0;
+            normal = front_face ? _normal : -_normal;
         }
 };
