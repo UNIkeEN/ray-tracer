@@ -52,7 +52,7 @@ class Camera {
         }
 
         std::vector<Vector3> render(const Scene& world, const int& thread_count) {
-            // render on multiple threads
+            // render on multiple threads row by row
             std::vector<Vector3> img_buffer(width * height);
             std::vector<std::thread> threads;
             std::atomic<int> next_row(0); //next row index for processing

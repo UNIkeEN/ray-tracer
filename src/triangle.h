@@ -146,10 +146,16 @@ class MeshTriangle : public Object {
     private:
         void load_meshes_from_OBJ(const std::string& filename, const bool& load_texture) {
             objl::Loader loader;
+            Material* material;
             bool loaded = loader.LoadFile(filename);
             assert(loaded); // check if loaded successfully
 
             for (const auto &mesh: loader.LoadedMeshes) {
+                if (load_texture) {
+                    material = new Lambertian(std::make_shared<ImageTexture>(mesh.MeshMaterial->map_Kd.c_str()));
+                } else {
+                    material = mat;
+                }
                 for (int i = 0; i < mesh.Indices.size(); i += 3) {
                     Vector3 face_vertices[3];
                     Vector2 face_uvs[3];
@@ -160,7 +166,7 @@ class MeshTriangle : public Object {
                         auto vertex_position = Vector3(vert.Position.X, vert.Position.Y, vert.Position.Z);
                         face_vertices[j] = vertex_position;
 
-                        if (vert_idx < mesh.Vertices.size() && vert_idx < mesh.Vertices.size()) {
+                        if (vert_idx < mesh.Vertices.size()) {
                             auto uv = Vector2(vert.TextureCoordinate.X, vert.TextureCoordinate.Y);
                             face_uvs[j] = uv;
                         } else {
@@ -168,8 +174,7 @@ class MeshTriangle : public Object {
                         }
                     }
 
-                    triangles.emplace_back(face_vertices[0], face_vertices[1], face_vertices[2],face_uvs[0], face_uvs[1], face_uvs[2],
-                       load_texture ? new Lambertian(std::make_shared<ImageTexture>(mesh.MeshMaterial->map_Kd.c_str())) : mat);
+                    triangles.emplace_back(face_vertices[0], face_vertices[1], face_vertices[2],face_uvs[0], face_uvs[1], face_uvs[2], material);
                 }
             }
         }
