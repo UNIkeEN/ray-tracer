@@ -25,4 +25,8 @@ set ( SOURCE
     src/external/rtw_stb_image.h
 )
 
+find_package(Threads REQUIRED)
+
 add_executable(UNIkeEN_ray_tracer ${SOURCE})
+
+target_link_libraries(UNIkeEN_ray_tracer PRIVATE Threads::Threads)
